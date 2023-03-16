@@ -1,0 +1,18 @@
+.service { 
+    padding: 20px 0;
+}
+
+.service-cards { 
+    display: flex;
+    justify-content: space-between;
+}
+
+.service-item { 
+    width: 30%;
+    
+}
+
+.heading { 
+    text-align: center;
+    margin-bottom: 20px;
+}

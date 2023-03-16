@@ -1,0 +1,14 @@
+.product-list { 
+    display: flex;
+    flex-wrap: wrap ;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.product-item { 
+    text-decoration: none;
+    color: black;
+    width: 23%;
+    margin-right: 2%;
+    margin-bottom: 2%;
+}
