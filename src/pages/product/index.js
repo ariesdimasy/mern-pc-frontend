@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
 
 import { Card, Container, Row, Col, Dropdown, Form } from "react-bootstrap";
 
 import style from "./index.module.css";
 import MyPagination from "../../components/MyPagination";
+import { fetchProducts } from "../../redux/product/productAction";
 
 export default function Index() {
-  const [products, setProducts] = useState([]);
+  const dispatch = useDispatch();
+  // const [products, setProducts] = useState([]);
+  const products = useSelector((state) => state.productReducer.products);
+  const pageCount = useSelector((state) => state.productReducer.pageCount);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [order, setOrder] = useState("");
   const [orderBy, setOrderBy] = useState("");
-  const [pageCount, setPageCount] = useState(0);
 
   useEffect(() => {
     const queryParams = {};
@@ -35,20 +38,26 @@ export default function Index() {
       queryParams["orderBy"] = orderBy;
     }
 
-    axios
-      .get(`http://localhost:4500/product`, {
-        params: queryParams,
-      })
-      .then((res) => {
-        setProducts(res.data.data.rows);
-        setPage(res.data.pagination.page);
-        setPageCount(res.data.pagination.pageCount);
-      });
-  }, [page, search, order, orderBy]);
+    // action di panggil disini
+    dispatch(fetchProducts(queryParams));
+    console.log("products ===> ", products);
+  }, [page, search, order, orderBy, dispatch]);
+
+  useEffect(() => {
+    const queryParams = {};
+
+    queryParams.limit = 20;
+
+    if (page) {
+      queryParams["page"] = page;
+    }
+    dispatch(fetchProducts(queryParams));
+  }, []);
 
   return (
     <Container>
       <h1 style={{ textAlign: "center" }}> Product </h1>
+
       <Row style={{ marginTop: 20 }}>
         <Col md={6}>
           <Row>
@@ -101,27 +110,33 @@ export default function Index() {
         </Col>
       </Row>
       <div className={style["product-list"]}>
-        {products.map((item) => {
-          return (
-            <a href={`/product/${item}`} className={style["product-item"]}>
-              <Card>
-                <Card.Img
-                  variant="top"
-                  height={150}
-                  src={
-                    item.productImage
-                      ? "http://localhost:4500/products/" + item.productImage
-                      : "http://localhost:4500/products/no-image.png"
-                  }
-                />
-                <Card.Body>
-                  <Card.Title>{item.productName}</Card.Title>
-                  <Card.Text>{item.price}</Card.Text>
-                </Card.Body>
-              </Card>
-            </a>
-          );
-        })}
+        {products
+          ? products?.map((item) => {
+              return (
+                <a
+                  href={`/product/${item.id}`}
+                  className={style["product-item"]}
+                >
+                  <Card>
+                    <Card.Img
+                      variant="top"
+                      height={150}
+                      src={
+                        item.productImage
+                          ? "http://localhost:4500/products/" +
+                            item.productImage
+                          : "http://localhost:4500/products/no-image.png"
+                      }
+                    />
+                    <Card.Body>
+                      <Card.Title>{item.productName}</Card.Title>
+                      <Card.Text>{item.price}</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </a>
+              );
+            })
+          : JSON.stringify(products)}
       </div>
       <Row>
         <Col md={6}></Col>

@@ -1,0 +1,20 @@
+.product-detail { 
+    margin-top: 40px;
+}
+
+.product-title { 
+    margin-bottom: 5px;
+}
+
+.product-price { 
+    margin-bottom: 20px;
+}
+
+.product-category { 
+    padding-bottom: 5px ;
+    margin-bottom: 5px;
+}
+
+.comment-section { 
+    margin-top: 40px !important;
+}
