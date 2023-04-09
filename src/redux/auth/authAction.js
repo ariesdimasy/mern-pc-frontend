@@ -1,6 +1,5 @@
 import { AUTH_LOGIN } from "./authTypes";
 import { login } from "./../../api/authApi";
-import { Navigate } from "react-router-dom";
 
 export function authLogin(email, password) {
   return async function (dispatch, getState) {
