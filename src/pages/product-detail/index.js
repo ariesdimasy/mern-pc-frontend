@@ -14,12 +14,20 @@ import {
 import style from "./index.module.css";
 import { useDispatch, useSelector } from "react-redux";
 
-import { fetchDetailProduct } from "../../redux/product/productAction";
+import {
+  fetchDetailProduct,
+  postComment,
+} from "../../redux/product/productAction";
+
+import PriceFormat from "../../components/PriceFormat";
+import { apiUrl } from "../../helpers";
 
 export default function ProductDetail(props) {
   const { id } = useParams();
   const dispatch = useDispatch();
   const productDetail = useSelector((state) => state.productReducer.product);
+
+  const [comment, setComment] = useState("");
 
   useEffect(() => {
     dispatch(fetchDetailProduct(id));
@@ -37,9 +45,8 @@ export default function ProductDetail(props) {
                   height={300}
                   src={
                     productDetail.productImage
-                      ? "http://localhost:4500/products/" +
-                        productDetail.productImage
-                      : "http://localhost:4500/products/no-image.png"
+                      ? apiUrl("products/" + productDetail.productImage)
+                      : apiUrl("products/no-image.png")
                   }
                 />
               </Card.Body>
@@ -53,7 +60,9 @@ export default function ProductDetail(props) {
             <Badge bg="primary" className={style["product-category"]}>
               {productDetail?.Category?.categoryName}
             </Badge>
-            <h5 className={style["product-price"]}>{productDetail.price}</h5>
+            <div className={style["product-price"]}>
+              <PriceFormat num={productDetail?.price || 0}></PriceFormat>
+            </div>
             <p>
               {productDetail.description
                 ? productDetail.description
@@ -79,16 +88,23 @@ export default function ProductDetail(props) {
                   </Col>
                   <Col md={11}>
                     {props.authStorage ? (
-                      <>
+                      <Form.Group>
                         <Form.Label>
                           <b>{props.authStorage.name}</b>{" "}
                         </Form.Label>
                         <Form.Control
-                          type="textarea"
-                          id="user-comment"
-                          aria-describedby="user-comment"
+                          type="text"
+                          value={comment}
+                          multiple
+                          onChange={(e) => setComment(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && comment.length >= 5) {
+                              dispatch(postComment(id, comment));
+                              setComment("");
+                            }
+                          }}
                         />
-                      </>
+                      </Form.Group>
                     ) : (
                       <>
                         You must <a href="/login">login</a> to commented thid
@@ -108,8 +124,7 @@ export default function ProductDetail(props) {
                         width={50}
                         src={
                           item.User.profile_picture
-                            ? "http://localhost:4500/users/" +
-                              item.User.profile_picture
+                            ? apiUrl("users/" + item.User.profile_picture)
                             : "https://picsum.photos/50"
                         }
                       />

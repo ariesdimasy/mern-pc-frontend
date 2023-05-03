@@ -1,0 +1,21 @@
+.container { 
+    min-height: calc(100vh - 108px);
+    box-sizing: border-box;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.row { 
+    margin: 0 !important;
+}
+
+.dashboard-content {
+    background-color: whitesmoke;
+    padding: 40px 0;
+}
+
+.dashboard-sidebar { 
+    padding-top: 20px;
+    padding-left: 40px !important;
+    background-color: #212529;
+}

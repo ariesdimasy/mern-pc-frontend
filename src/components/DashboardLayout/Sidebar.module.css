@@ -1,0 +1,9 @@
+.sidebar-menu-list {
+    background-color: #212529 !important;
+    border: none !important;
+}
+
+.sidebar-menu-list a {
+    color: white;
+    text-decoration: none;
+}

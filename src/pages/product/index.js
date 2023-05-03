@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { Card, Container, Row, Col, Dropdown, Form } from "react-bootstrap";
+import {
+  Badge,
+  Card,
+  Container,
+  Row,
+  Col,
+  Dropdown,
+  Form,
+} from "react-bootstrap";
 
 import style from "./index.module.css";
 import MyPagination from "../../components/MyPagination";
 import { fetchProducts } from "../../redux/product/productAction";
+
+import PriceFormat from "../../components/PriceFormat";
+import { apiUrl } from "../../helpers";
 
 export default function Index() {
   const dispatch = useDispatch();
@@ -123,14 +134,20 @@ export default function Index() {
                       height={150}
                       src={
                         item.productImage
-                          ? "http://localhost:4500/products/" +
-                            item.productImage
-                          : "http://localhost:4500/products/no-image.png"
+                          ? apiUrl("products/" + item.productImage)
+                          : apiUrl("products/no-image.png")
                       }
                     />
                     <Card.Body>
                       <Card.Title>{item.productName}</Card.Title>
-                      <Card.Text>{item.price}</Card.Text>
+                      <Card.Text>
+                        <Badge bg="primary">
+                          {item?.Category?.categoryName}
+                        </Badge>
+                      </Card.Text>
+                      <Card.Text>
+                        <PriceFormat num={item.price}></PriceFormat>
+                      </Card.Text>
                     </Card.Body>
                   </Card>
                 </a>

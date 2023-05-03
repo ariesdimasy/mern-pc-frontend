@@ -1,6 +1,8 @@
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { useEffect, useState } from "react";
 
+import { redirect } from "../../helpers";
+
 export default function MyNavbar(props) {
   const [authStorage, setAuthStorage] = useState("");
 
@@ -12,7 +14,7 @@ export default function MyNavbar(props) {
 
   const onLogout = () => {
     localStorage.removeItem("authStorage");
-    window.location.href = "/";
+    redirect("/");
   };
 
   return (

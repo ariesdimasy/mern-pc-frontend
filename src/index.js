@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 
 import Layout from "./components/layout";
+import DashboardLayout from "./components/DashboardLayout";
 
 import { Provider } from "react-redux";
 import {
@@ -11,13 +12,16 @@ import {
   Navigate,
   Outlet,
   RouterProvider,
-  useNavigate,
 } from "react-router-dom";
 
 import Home from "./pages/home";
 import Product from "./pages/product";
 import ProductDetail from "./pages/product-detail";
 import Login from "./pages/login";
+import Register from "./pages/register";
+import Category from "./pages/dashboard/category";
+import ProductDashboard from "./pages/dashboard/product";
+import Index from "./pages/dashboard/index";
 
 import store from "./redux/store";
 
@@ -33,6 +37,18 @@ const ProtectedAuthRoute = (props) => {
   }
   return props.children ? props.children : <Outlet />;
   //return <Test />;
+};
+
+const ProtectedRoute = (props) => {
+  const { authStorage, redirectPath = "/" } = props;
+
+  if (
+    authStorage?.authorization === "admin" ||
+    authStorage?.authorization === "superadmin"
+  ) {
+    return props.children ? props.children : <Outlet />;
+  }
+  return <Navigate to={redirectPath} replace />;
 };
 
 const router = createBrowserRouter([
@@ -72,6 +88,47 @@ const router = createBrowserRouter([
           <Login authStorage={authStorage}></Login>
         </Layout>
       </ProtectedAuthRoute>
+    ),
+  },
+  {
+    path: "/register",
+    forceRefresh: true,
+    element: (
+      <ProtectedAuthRoute authStorage={authStorage}>
+        <Layout>
+          <Register authStorage={authStorage}></Register>
+        </Layout>
+      </ProtectedAuthRoute>
+    ),
+  },
+  {
+    path: "/admin-dashboard",
+    element: (
+      <ProtectedRoute authStorage={authStorage}>
+        <DashboardLayout>
+          <Index authStorage={authStorage}></Index>
+        </DashboardLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/admin-dashboard/category",
+    element: (
+      <ProtectedRoute authStorage={authStorage}>
+        <DashboardLayout>
+          <Category authStorage={authStorage}></Category>
+        </DashboardLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/admin-dashboard/product",
+    element: (
+      <ProtectedRoute authStorage={authStorage}>
+        <DashboardLayout>
+          <ProductDashboard authStorage={authStorage}></ProductDashboard>
+        </DashboardLayout>
+      </ProtectedRoute>
     ),
   },
   {
